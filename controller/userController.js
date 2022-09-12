@@ -29,7 +29,9 @@ export const deleteUserById = async (req, res) => {
 };
 
 
-export const updateUser = async (req, res) => {
+export const updateUser = async (req, res, next) => {
+  const user = await userModel.findById(req.params.id);
+  res.locals.userInitialState = user;
   if (req.body.isAdmin) {
     try {
       const user = await userModel.findById(req.params.id);
@@ -47,7 +49,8 @@ export const updateUser = async (req, res) => {
       { $set: req.body },
       { new: true }
     );
-    res.status(200).json(updatedUser);
+    next();
+    //res.status(200).json(updatedUser);
   } catch (error) {
     console.error(error);
   }
